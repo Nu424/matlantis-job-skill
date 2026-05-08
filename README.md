@@ -2,6 +2,8 @@
 
 SSH経由でMatlantisに接続し、`mtl-bg-job` コマンドを使用してバックグラウンドジョブを管理するためのAgent Skillsです。
 
+本リポジトリは Matlantis の公式ドキュメントや公式サポートではありません。第三者による利用支援のための手順・例であり、仕様・契約・サポートは Matlantis の公式情報を優先してください。
+
 ## 使い方
 1. (前提) MatlantisへSSH接続できる環境を整備する
     - 公式のFAQを参照してください: [Matlantis FAQ](https://matlantis.zendesk.com/hc/ja/articles/40524152374169-SSH接続-設定方法-2026-3-6-更新)
