@@ -189,7 +189,10 @@ from matlantis_features.ase_ext.optimize import FIRELBFGS # Matlantis環境で�
 
 FOLDER = Path('/home/jovyan/<task-name>')
 atoms = read(FOLDER / 'input.cif')
-atoms.calc = ASECalculator(Estimator(calc_mode=EstimatorCalcMode.R2SCAN_PLUS_D3))
+# model_version は必ず明示する（省くと既定の版になり、新しい版は明示しないと使われない。版で結果が変わりうる）
+estimator = Estimator(calc_mode=EstimatorCalcMode.R2SCAN_PLUS_D3, model_version="v8.0.0")
+atoms.calc = ASECalculator(estimator)  # Estimator は Calculator ごとに新しく作る（共有しない）
+print(f"pfp_api_client: {pfp_api_client.__version__}, model: {estimator.model_version}, mode: {estimator.calc_mode}")
 
 opt = FIRELBFGS(atoms, logfile=str(FOLDER / 'opt.log'))
 opt.run(fmax=0.01, steps=500)
@@ -207,6 +210,8 @@ print(f"E = {atoms.get_potential_energy():.6f} eV")
 | Bash ツール経由で `ssh: ... .bat: not found` | Bash 経由だと SSH ホスト解決が失敗する | PowerShell ツールから実行する |
 | `mtl-bg-job run` で kernel エラー | `.py` で `--kernel` を指定していない、または名前が環境と不一致 | `mtl-bg-job kernels` で正しい名前を確認し `--kernel <name>` を付ける |
 | 結果ログが空 | ジョブがまだ起動直後 | 数秒〜数十秒待ってから再確認 |
+| `MultiCalculatorUseDetected` で落ちる | 1 つの `Estimator` を複数の `ASECalculator`（吸着系・清浄面・気相分子など）で共有している | Calculator ごとに `Estimator(...)` を新しく作る |
+| 以前と同じ計算なのに値が 0.1 eV 程度違う | `model_version` を指定せず、既定の版が使われた（または版を変えた） | `Estimator(..., model_version="vX.Y.Z")` で明示し、版をログに出す |
 
 ## 危険操作・確認すべきこと
 
